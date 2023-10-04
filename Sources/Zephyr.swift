@@ -353,7 +353,7 @@ private extension Zephyr {
     ///     - value: The value that will be synchronized. Must be passed with a key, otherwise, nothing will happen.
     func syncFromCloud(key: String? = nil, value: Any? = nil) {
         let defaults = userDefaults
-        defaults.set(Date(), forKey: ZephyrSyncKey)
+        DispatchQueue.main.async { defaults.set(Date(), forKey: self.ZephyrSyncKey) }
 
         // Sync all defaults from iCloud if key is nil, otherwise sync only the specific key/value pair.
         guard let key = key else {
@@ -435,7 +435,7 @@ extension Zephyr {
         zephyrQueue.async {
             if self.registeredObservationKeys.contains(keyPath) {
                 if object is UserDefaults {
-                    self.userDefaults.set(Date(), forKey: self.ZephyrSyncKey)
+                    DispatchQueue.main.async { self.userDefaults.set(Date(), forKey: self.ZephyrSyncKey) }
                 }
 
                 self.syncSpecificKeys(keys: [keyPath], dataStore: .local)
